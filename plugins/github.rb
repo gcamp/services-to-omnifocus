@@ -18,7 +18,9 @@ def get_repo_name(html_url)
   URI(html_url).path.split(/\//)[1..2].join('/')
 end
 
-[ github.issues.list, github.issues.list(:state => 'closed') ].flatten.each do |i|
+issues = [ github.issues.list, github.issues.list(:state => 'closed') ];
+
+issues.flatten.each do |i|
   repo = get_repo_name(i.html_url)
   task_id = "[%s #%d]" % [repo, i.number]
   task = project.tasks[its.name.contains(task_id)].first.get rescue nil
@@ -37,5 +39,16 @@ end
       :name => "%s %s" % [task_id, i.title],
       :note => i.html_url,
     }
+  end
+end
+
+project.tasks().get.each do |task|
+  if !task.completed.get
+    task_name = task.name().get
+    matches = /\[([a-zA-Z]*\/[a-zA-Z]*) #([1-9][0-9]*)\]/.match(task_name)
+    puts matches.size
+    if matches && matches.size == 2
+      puts task_name
+    end
   end
 end
