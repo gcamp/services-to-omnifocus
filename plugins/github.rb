@@ -28,7 +28,10 @@ issues.each do |i|
   task = project.tasks[its.name.contains(task_id)].first.get rescue nil
 
   if task
-    if i.state.to_sym == :closed &&  !task.completed.get
+    if i.state.to_sym != :closed && task.completed.get
+      puts 'Uncompleting in OmniFocus: ' + task_id
+      task.completed.set false
+    elsif i.state.to_sym == :closed &&  !task.completed.get
       puts 'Completing in OmniFocus: ' + task_id
       task.completed.set true
     else

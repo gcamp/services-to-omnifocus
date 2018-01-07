@@ -52,12 +52,16 @@ stories.each do |story|
 
   storyIdentifier.push(storyId)
 
-  task = project.tasks[its.name.contains(story_id)].first.get rescue nil
+  task = project.tasks[its.name.contains(storyId)].first.get rescue nil
   if task
-    if storyShouldBeShown && !task.completed.get
+    if storyShouldBeShown && task.completed.get
+      puts 'Uncompleting in OmniFocus: ' + storyId
+      task.completed.set false
+    elsif !storyShouldBeShown && !task.completed.get
       puts 'Completing in OmniFocus: ' + storyId
       task.completed.set true
     else
+      puts 'Updating in OmniFocus: ' + storyId
       update_if_changed task, :note, storyUrl
       update_if_changed task, :name, "%s %s" % [storyId, story.name]
     end
@@ -78,7 +82,7 @@ project.tasks().get.each do |task|
       story_id = matches["identifier"]
 
       if !storyIdentifier.include? story_id
-        puts "Removing task #{task_id} in OmniFocus because assignment was removed"
+        puts "Removing task #{story_id} in OmniFocus because assignment was removed"
         $omnifocus.delete task
       end
     end
