@@ -8,8 +8,6 @@
 #   CLUBHOUSE_TOKEN: Contains an Oauth token created using the Authorizations API
 #                    (https://app.clubhouse.io/settings/account/api-tokens)
 #   CLUBHOUSE_USERNAME : Contains the username of your user in clubhouse.
-#   CLUBHOUSE_WORKFLOW_NAMES_TO_SHOW : Comma seperated list of workflow state name
-#                                      that should be shown in Omnifocus
 #
 
 require "clubhouse"
