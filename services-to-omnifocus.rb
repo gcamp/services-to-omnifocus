@@ -34,7 +34,7 @@ end.parse!
 
 $omnifocus = Appscript.app('OmniFocus').default_document
 
-plugin_dir = File.join(File.dirname(File.expand_path(__FILE__)), 
+plugin_dir = File.join(File.dirname(File.expand_path(__FILE__)),
                    ($options[:develop] ? 'plugins_develop' : 'plugins'))
 Dir.glob(File.join(plugin_dir, '*.rb')).each do |plugin|
   puts 'Processing "%s" plugin' % File.basename(plugin, '.rb') if $options[:verbose]

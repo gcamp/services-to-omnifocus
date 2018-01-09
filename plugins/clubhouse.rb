@@ -61,7 +61,6 @@ stories.each do |story|
       puts 'Completing in OmniFocus: ' + story_id
       task.completed.set true
     else
-      puts 'Updating in OmniFocus: ' + story_id
       update_if_changed task, :note, story_url
       update_if_changed task, :name, "%s %s" % [story_id, story.name]
     end
