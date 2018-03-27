@@ -40,5 +40,3 @@ Dir.glob(File.join(plugin_dir, '*.rb')).each do |plugin|
   puts 'Processing "%s" plugin' % File.basename(plugin, '.rb') if $options[:verbose]
   require plugin
 end
-
-#$omnifocus.synchronize

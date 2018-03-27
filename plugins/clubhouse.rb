@@ -56,10 +56,10 @@ stories.each do |story|
   if task
     if story_should_be_shown && task.completed.get
       puts 'Uncompleting in OmniFocus: ' + story_id
-      task.completed.set false
+      task.mark_incomplete
     elsif !story_should_be_shown && !task.completed.get
       puts 'Completing in OmniFocus: ' + story_id
-      task.completed.set true
+      task.mark_complete
     else
       update_if_changed task, :note, story_url
       update_if_changed task, :name, "%s %s" % [story_id, story.name]

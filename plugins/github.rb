@@ -30,10 +30,10 @@ issues.each do |i|
   if task
     if i.state.to_sym != :closed && task.completed.get
       puts 'Uncompleting in OmniFocus: ' + task_id
-      task.completed.set false
+      task.mark_incomplete
     elsif i.state.to_sym == :closed &&  !task.completed.get
       puts 'Completing in OmniFocus: ' + task_id
-      task.completed.set true
+      task.mark_complete
     else
       update_if_changed task, :note, i.html_url
       update_if_changed task, :name, "%s %s" % [task_id, i.title]
