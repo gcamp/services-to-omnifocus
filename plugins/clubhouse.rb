@@ -63,6 +63,14 @@ stories.each do |story|
     else
       update_if_changed task, :note, story_url
       update_if_changed task, :name, "%s %s" % [story_id, story.name]
+
+      story_deadline = story.deadline
+      if story_deadline != nil
+        date = Date.parse story_deadline
+        update_if_changed task, :due_date, date
+      else
+        update_if_changed task, :due_date, :missing_value
+      end
     end
   elsif story_should_be_shown
     puts 'Adding: ' + story_id
