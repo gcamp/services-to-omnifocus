@@ -67,6 +67,8 @@ stories.each do |story|
       story_deadline = story.deadline
       if story_deadline != nil
         date = Date.parse story_deadline
+        # force deadline at 6PM
+        date = DateTime.new(date.year, date.month, date.day, 18, 0, 0, 0)
         update_if_changed task, :due_date, date
       else
         update_if_changed task, :due_date, :missing_value
