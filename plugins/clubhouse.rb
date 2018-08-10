@@ -47,7 +47,7 @@ stories.each do |story|
   project_name = Clubhouse::Project.find(story.project_id).name
   epic_name = Clubhouse::Epic.find(story.epic_id).name rescue "No Epic"
   story_id = "[%s-%s #%d]" % [project_name, epic_name, story.id]
-  story_url = "https://app.clubhouse.io//story/" + story.id.to_s
+  story_url = "https://app.clubhouse.io/story/" + story.id.to_s
   story_should_be_shown = workflow_state_ids_to_show.include? story.workflow_state_id
 
   story_identifier.push(story_id)
