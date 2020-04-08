@@ -1,5 +1,3 @@
-begin; require 'rubygems'; rescue LoadError; end
-
 require "rubygems"
 require "bundler/setup"
 require "rb-scpt"
