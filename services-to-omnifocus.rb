@@ -1,6 +1,8 @@
+begin; require 'rubygems'; rescue LoadError; end
+
 require "rubygems"
 require "bundler/setup"
-require "appscript"
+require "rb-scpt"
 require "optparse"
 
 def its
