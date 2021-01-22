@@ -6,4 +6,4 @@ gem "zendesk_api"
 gem "autotask_api"
 gem "github_api"
 gem "ruby-trello"
-gem 'clubhouse.io-ruby'
+gem 'clubhouse_ruby'

@@ -10,16 +10,18 @@
 #   CLUBHOUSE_USERNAME : Contains the username of your user in clubhouse.
 #
 
-require "clubhouse"
+require "clubhouse_ruby"
 
-Clubhouse.default_client = Clubhouse::Client.new(ENV['CLUBHOUSE_TOKEN'])
+clubhouse = ClubhouseRuby::Clubhouse.new(ENV['CLUBHOUSE_TOKEN'])
 project = $omnifocus.flattened_projects["Clubhouse"].get
 
 user_uuid = nil
-Clubhouse::User.all.each do |user|
-  if user.username == ENV['CLUBHOUSE_USERNAME']
-    puts 'User id for ' + ENV['CLUBHOUSE_USERNAME'] + ' is ' + user.id
-    user_uuid = user.id
+clubhouse.members.list[:content].each do |user|
+  username = user['profile']['mention_name']
+  # puts user[:profile][:name]
+  if username == ENV['CLUBHOUSE_USERNAME']
+    puts 'User id for ' + ENV['CLUBHOUSE_USERNAME'] + ' is ' + username
+    user_uuid = username
   end
 end
 
@@ -28,10 +30,10 @@ if user_uuid == nil
 end
 
 workflow_state_ids_to_show = []
-Clubhouse::Workflow.all.each do |workflow|
-  workflow.states.each do |workflow_state|
-    if ['unstarted', 'started'].include? workflow_state.type
-      workflow_state_ids_to_show.push(workflow_state.id)
+clubhouse.workflows.list[:content].each do |workflow|
+  workflow['states'].each do |workflow_state|
+    if ['unstarted', 'started'].include? workflow_state['type']
+      workflow_state_ids_to_show.push(workflow_state['id'])
     end
   end
 end
@@ -41,14 +43,14 @@ if workflow_state_ids_to_show.empty?
 end
 
 story_identifier = []
+stories = clubhouse.search_stories(query: 'owner:' + user_uuid)
+stories[:content]['data'].each do |story|
 
-stories = Clubhouse::Story.search(owner_id: user_uuid)
-stories.each do |story|
-  project_name = Clubhouse::Project.find(story.project_id).name
-  epic_name = Clubhouse::Epic.find(story.epic_id).name rescue "No Epic"
-  story_id = "[%s-%s #%d]" % [project_name, epic_name, story.id]
-  story_url = "https://app.clubhouse.io/story/" + story.id.to_s
-  story_should_be_shown = workflow_state_ids_to_show.include? story.workflow_state_id
+  project_name = clubhouse.projects(story['project_id']).get[:content]['name']
+  epic_name = clubhouse.epics(story['epic_id']).get[:content]['name'] rescue "No Epic"
+  story_id = "[%s-%s #%d]" % [project_name, epic_name, story['id']]
+  story_url = "https://app.clubhouse.io/story/" + story['id'].to_s
+  story_should_be_shown = workflow_state_ids_to_show.include? story['workflow_state_id']
 
   story_identifier.push(story_id)
 
@@ -62,9 +64,9 @@ stories.each do |story|
       task.mark_complete
     else
       update_if_changed task, :note, story_url
-      update_if_changed task, :name, "%s %s" % [story_id, story.name]
+      update_if_changed task, :name, "%s %s" % [story_id, story['name']]
 
-      story_deadline = story.deadline
+      story_deadline = story['deadline']
       if story_deadline != nil
         date = Date.parse story_deadline
         # force deadline at 6PM
@@ -77,7 +79,7 @@ stories.each do |story|
   elsif story_should_be_shown
     puts 'Adding: ' + story_id
     project.make :new => :task, :with_properties => {
-      :name => "%s %s" % [story_id, story.name],
+      :name => "%s %s" % [story_id, story['name']],
       :note => story_url,
     }
   end
